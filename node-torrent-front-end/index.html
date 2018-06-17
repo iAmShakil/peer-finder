@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" />
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrAUXlAvq5qmtrJLTybOXq6T6kIQPIb0w&callback=initMap"
+  type="text/javascript"></script>
+  <style>
+#map {
+    width: 100%;
+    height: 600px;
+}
+  </style>
+</head>
+<body>
+
+<form action="">
+	<input type="file" name="torrent" id="torrent">
+	<input type="submit" value="submit" id="formSubmit">
+</form>
+<div id="map">
+	
+</div>
+</body>
+    <script>
+
+      markerState = {
+    		state: 0, }
+
+      var markers = [];
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 1
+        });
+      }
+
+     function deleteMarkers() {
+        //Loop through all the markers that were added via markers.push
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    };
+
+	document.getElementById("formSubmit").addEventListener('click', function(event){
+		event.preventDefault();
+		handleSubmission();
+	});
+
+	function handleSubmission(){
+		var formData = new FormData();
+		const file = document.querySelector('#torrent').files[0];
+		formData.append('torrent', file);
+		axios.post('http://localhost:3000/torrent', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			}
+		}).then(function (response) {
+			if(window.markerState.state){
+				deleteMarkers();
+			} else{
+				window.markerState = {
+					state: 1,
+				};
+			}
+			response.data.map(function(elem) {
+				          var latLng = new google.maps.LatLng(elem.ll[0],elem.ll[1]);
+                          var marker = new google.maps.Marker({
+                                            position: latLng,
+                                            map : map,
+                                            });
+
+                          markers.push(marker);
+
+
+
+			});
+		})
+		.catch( function (err){
+			console.log(err);
+		})
+	}
+</script>
+
+</html>
