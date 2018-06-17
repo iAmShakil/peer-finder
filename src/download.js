@@ -3,7 +3,7 @@ const Buffer = require('buffer').Buffer;
 const tracker = require('./tracker');
 const geoIp = require('geoip-lite');
 
-function downloadWrapper(torrent, callback){
+function downloadWrapper(torrent, filePath, callback){
 
     tracker(torrent, function(peers){
         let infoStore = [];
@@ -12,7 +12,7 @@ function downloadWrapper(torrent, callback){
                 infoStore.push(geoIp.lookup(peer.ip));
             }
         );
-        callback(infoStore);
+        callback(infoStore, filePath);
     });
 }
 

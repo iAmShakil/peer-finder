@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -5,14 +6,9 @@ const multer = require('multer');
 const torrentParser = require('./src/torrent-parser');
 const download = require('./src/download');
 
-// const decoded = torrentParser.open('puppy.old.torrent');
+
 const ADDRESS = 'http://localhost';
 const PORT = process.env.port || 3000;
-
-// let info = download(decoded);
-// app.get('/', function(req, res){
-//     res.send(info);
-// });
 
 var storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -39,8 +35,9 @@ app.post('/torrent', function(req, res){
             return res.send("error");
         }
         const decoded = torrentParser.open(req.file.path);
-        download(decoded, function(theList){
+        download(decoded, req.file.path, function(theList, filePath){
             res.send(theList);
+            fs.unlinkSync(filePath);
         });
     });
 });
