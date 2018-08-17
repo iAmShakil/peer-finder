@@ -1,6 +1,9 @@
 {
-  "name": "torrent traacker",
-  "version": "111",
+  "name": "torrent-peer-finder",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "bencode": "^2.0.0",
     "bn.js": "^4.11.8",
@@ -9,5 +12,8 @@
     "geoip-lite": "^1.2.1",
     "moment": "^2.22.2",
     "multer": "^1.3.0"
+  },
+  "devDependencies": {
+    "standardjs": "^1.0.0-alpha"
   }
 }
